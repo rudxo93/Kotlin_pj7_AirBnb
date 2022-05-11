@@ -3,6 +3,7 @@
     package="com.duran.airbnb">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/><!-- 위치 정보 엑세스 권한 요청 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Glide 사용을 위한 인터넷 사용 권한 -->
 
     <application
         android:allowBackup="true"
