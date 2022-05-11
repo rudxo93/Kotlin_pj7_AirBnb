@@ -41,6 +41,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // scrollTo() : 카메라의 대상 지점을 지정한 좌표로 삼는다.
         val cameraUpdate = CameraUpdate.scrollTo(LatLng(37.5666102, 126.9783881))
         naverMap.moveCamera(cameraUpdate) // 호출해서 카메라는 움직인다.
+
+        // 현위치 기능
+        val uiSetting = naverMap.uiSettings
+        uiSetting.isLocationButtonEnabled = true // 현위치 버튼 컨트롤 사용 활성화
     }
 
     override fun onStart() {
