@@ -1,10 +1,13 @@
 package com.duran.airbnb
 
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.*
+import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.util.FusedLocationSource
+import com.naver.maps.map.util.MarkerIcons
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -50,6 +53,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         locationSource =
             FusedLocationSource(this@MainActivity, LOCATION_PERMISSION_REQUEST_CODE)
         naverMap.locationSource = locationSource
+
+        // 마커 기능 - 지도상의 한 지점을 나타낸다.
+        val marker = Marker()
+        marker.position = LatLng(37.5670135, 126.9783740) // 좌표
+        marker.map = naverMap // null을 지정하면 지도에서 마커가 사라진다.
+        marker.icon = MarkerIcons.BLACK // 검은색 아이콘 -> 덧입히기 적합한 이미지인 MarkerIcons.BLACK을 빌트인으로 제공
+        marker.iconTintColor = Color.RED // 덧입힐 색상
     }
 
     // onRequestPermissionResult()의 결과를 FusedLocationSource의 onRequestPermissionsResult()에 전달
@@ -108,5 +118,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
-    
+
+
 }
