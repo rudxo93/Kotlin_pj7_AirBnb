@@ -2,6 +2,8 @@ package com.duran.airbnb
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraUpdate
 import com.naver.maps.map.MapView
 import com.naver.maps.map.NaverMap
 import com.naver.maps.map.OnMapReadyCallback
@@ -33,6 +35,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         naverMap.maxZoom = 18.0 // 지도의 최대 줌 레벨
         naverMap.minZoom = 10.0 // 지도의 최소 줌 레벨
+
+        // 카메라 이동
+        // CameraUpdate = 카메라를 이동할 위치, 방법 등을 정의하는 클래스
+        // scrollTo() : 카메라의 대상 지점을 지정한 좌표로 삼는다.
+        val cameraUpdate = CameraUpdate.scrollTo(LatLng(37.5666102, 126.9783881))
+        naverMap.moveCamera(cameraUpdate) // 호출해서 카메라는 움직인다.
     }
 
     override fun onStart() {
