@@ -3,10 +3,8 @@ package com.duran.airbnb
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.CameraUpdate
-import com.naver.maps.map.MapView
-import com.naver.maps.map.NaverMap
-import com.naver.maps.map.OnMapReadyCallback
+import com.naver.maps.map.*
+import com.naver.maps.map.util.FusedLocationSource
 
 class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -15,6 +13,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private lateinit var naverMap: NaverMap
+    private lateinit var locationSource: FusedLocationSource
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +44,30 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // 현위치 기능
         val uiSetting = naverMap.uiSettings
         uiSetting.isLocationButtonEnabled = true // 현위치 버튼 컨트롤 사용 활성화
+
+        // 생성자에 액티비티 객체를 전달하고 권한 요청 코드를 지정한다.
+        // FusedLocationSource를 생성하고 NaverMap에 지정
+        locationSource =
+            FusedLocationSource(this@MainActivity, LOCATION_PERMISSION_REQUEST_CODE)
+        naverMap.locationSource = locationSource
+    }
+
+    // onRequestPermissionResult()의 결과를 FusedLocationSource의 onRequestPermissionsResult()에 전달
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE)
+            return
+
+        if (locationSource.onRequestPermissionsResult(requestCode,permissions,grantResults)){
+            if(!locationSource.isActivated){ // 권한 거부됨
+                naverMap.locationTrackingMode = LocationTrackingMode.None
+            }
+            return
+        }
     }
 
     override fun onStart() {
@@ -82,4 +105,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mapView.onLowMemory()
     }
 
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
+    }
+    
 }
