@@ -4,6 +4,8 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.viewpager2.widget.ViewPager2
+import com.duran.airbnb.adapter.HouseViewPagerAdapter
 import com.duran.airbnb.retrofit.HouseDto
 import com.duran.airbnb.retrofit.HouseModel
 import com.duran.airbnb.retrofit.HouseService
@@ -26,6 +28,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var naverMap: NaverMap
     private lateinit var locationSource: FusedLocationSource
 
+    private val viewPager: ViewPager2 by lazy {
+        findViewById(R.id.houseViewPager)
+    }
+
+    private val viewPagerAdapter = HouseViewPagerAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -37,6 +45,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         // mapView의 getMapAsync() 메서드로 OnMapReadyCallback을 등록하면 비동기로 naverMap 객체를 얻어올 수 있다.
         // naverMap객체가 준비되면 onMapReady 콜백 메서드가 호출된다.
         mapView.getMapAsync(this)
+
+        viewPager.adapter = viewPagerAdapter
     }
 
     // 지도 객체를 사용할 수 있을 때 해당 함수 자동으로 호출
@@ -90,7 +100,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                             return
                         }
                         response.body()?.let { dto ->
-                            upfateMarker(dto.items)
+                            updateMarker(dto.items)
+                            viewPagerAdapter.submitList(dto.items)
                         }
                     }
                     override fun onFailure(call: Call<HouseDto>, t: Throwable) {
@@ -102,7 +113,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun upfateMarker(houses: List<HouseModel>){
+    private fun updateMarker(houses: List<HouseModel>){
         houses.forEach { house ->
 
             val marker = Marker()
