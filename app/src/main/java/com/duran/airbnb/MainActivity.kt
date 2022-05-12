@@ -4,7 +4,10 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.duran.airbnb.adapter.HouseListAdapter
 import com.duran.airbnb.adapter.HouseViewPagerAdapter
 import com.duran.airbnb.retrofit.HouseDto
 import com.duran.airbnb.retrofit.HouseModel
@@ -33,6 +36,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private val viewPagerAdapter = HouseViewPagerAdapter()
+    private val recyclerViewAdapter = HouseListAdapter()
+
+    private val recyclerView: RecyclerView by lazy {
+        findViewById(R.id.recyclerView)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +55,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         mapView.getMapAsync(this)
 
         viewPager.adapter = viewPagerAdapter
+        recyclerView.adapter = recyclerViewAdapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
     }
 
     // 지도 객체를 사용할 수 있을 때 해당 함수 자동으로 호출
@@ -102,6 +112,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
                         response.body()?.let { dto ->
                             updateMarker(dto.items)
                             viewPagerAdapter.submitList(dto.items)
+                            recyclerViewAdapter.submitList(dto.items)
                         }
                     }
                     override fun onFailure(call: Call<HouseDto>, t: Throwable) {
