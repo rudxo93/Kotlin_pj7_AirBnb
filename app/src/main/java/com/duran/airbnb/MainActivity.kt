@@ -62,6 +62,18 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         viewPager.adapter = viewPagerAdapter
         recyclerView.adapter = recyclerViewAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
+
+        // page 변경시 처리
+        viewPager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                val selectedHouseModel = viewPagerAdapter.currentList[position]
+                val cameraUpdate = CameraUpdate.scrollTo(LatLng(selectedHouseModel.lat,selectedHouseModel.lng))
+
+                naverMap.moveCamera(cameraUpdate)
+            }
+        })
     }
 
     // 지도 객체를 사용할 수 있을 때 해당 함수 자동으로 호출
@@ -79,7 +91,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // 현위치 기능
         val uiSetting = naverMap.uiSettings
-        uiSetting.isLocationButtonEnabled = false 
+        uiSetting.isLocationButtonEnabled = false
 
         currentLocationButton.map = naverMap
 
