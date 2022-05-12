@@ -1,5 +1,6 @@
 package com.duran.airbnb
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -37,7 +38,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickLis
         findViewById(R.id.houseViewPager)
     }
 
-    private val viewPagerAdapter = HouseViewPagerAdapter()
+    private val viewPagerAdapter = HouseViewPagerAdapter(itemClicked = {
+        onHouseModelClicked(houseModel = it)
+    })
     private val recyclerViewAdapter = HouseListAdapter()
 
     private val recyclerView: RecyclerView by lazy {
@@ -150,7 +153,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickLis
 
             val marker = Marker()
             marker.position = LatLng(house.lat, house.lng)
-            marker.onClickListener = this
+            marker.onClickListener = this // 마커 클릭 시 viewPager연동
             marker.map = naverMap
             marker.tag = house.id
             marker.icon = MarkerIcons.BLACK
@@ -212,10 +215,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickLis
         mapView.onLowMemory()
     }
 
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
-    }
-
     override fun onClick(overlay: Overlay): Boolean {
         // overlay : 마커
 
@@ -227,6 +226,24 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickLis
             viewPager.currentItem = position
         }
         return true
+    }
+
+    private fun onHouseModelClicked(houseModel: HouseModel){
+        // 공유 기능; 인텐트에있는 츄져사용할것임
+        val intent = Intent()
+            .apply {
+                action = Intent.ACTION_SEND
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    "[지금 이 가격에 예약하세요!!] ${houseModel.title} ${houseModel.price} 사진 보기(${houseModel.imgUrl}",
+                )
+                type = "text/plain"
+            }
+        startActivity(Intent.createChooser(intent, null))
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1000
     }
 
 }
