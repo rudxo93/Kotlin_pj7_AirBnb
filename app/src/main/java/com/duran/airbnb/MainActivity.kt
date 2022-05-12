@@ -5,6 +5,7 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
@@ -49,6 +50,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickLis
 
     private val currentLocationButton : LocationButtonView by lazy {
         findViewById(R.id.currentLocationButton)
+    }
+
+    private val bottomSheetTitleTextView : TextView by lazy {
+        findViewById(R.id.bottomSheetTitleTextView)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,6 +142,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, Overlay.OnClickLis
                             updateMarker(dto.items)
                             viewPagerAdapter.submitList(dto.items)
                             recyclerViewAdapter.submitList(dto.items)
+                            bottomSheetTitleTextView.text = "${dto.items.size}개의 숙소"
                         }
                     }
                     override fun onFailure(call: Call<HouseDto>, t: Throwable) {
